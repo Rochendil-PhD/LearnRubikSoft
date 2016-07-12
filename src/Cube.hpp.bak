@@ -1,0 +1,50 @@
+#ifndef _CUBE_HPP_
+#define _CUBE_HPP_
+
+#include <vector>
+#include <string>
+
+#include "..\lib\glew\glew.h"
+#include "..\lib\freeglut\freeglut.h"
+#include "..\lib\glfw\glfw3.h"
+#include "..\lib\glm\glm.hpp"
+#include "..\lib\glm\gtc\matrix_transform.hpp"
+#include "..\lib\glm\gtc\constants.hpp"
+
+#include "Cubicle.hpp"
+#include "Common.hpp"
+
+class RubikCube
+{
+private:
+    //  Faces will retain config when looking from front(white up)
+    //  For up/down, we will consider red as main face
+    //  Remember! Center doesn't matter!
+    short facesID[6][9];
+    cubicleColor facesColor[6][9];
+    void setFace(cubicleColor, short*, cubicleColor*);
+    void initFaces();
+    void initFacesSolved();
+
+	std::vector<Cubicle*> cubicles;
+public:
+	RubikCube();
+	~RubikCube();
+	static RubikCube mainCube;
+
+	float* getCubicleModel(short);
+	glm::vec3 getCubiclePosition(short);
+
+	cubicleColor getCubicleColorByPosition(glm::vec3, cubicleColor);
+	bool isCubicleRotated(glm::vec3, cubicleColor);
+	bool isCubicleOK(short, cubicleColor);
+	std::vector<short> getWhiteUpPositions(); // we use short instead of bool so we can sum them up.
+	std::vector<short> getWhiteCubiclesPositions();
+	std::vector<short> getRotationsNeededForWhite(); // by position: [0] = 2; [1] = 0; [2] = 6; [3] = 8
+
+	void animate(float);
+
+    void rotateLogic(cubicleColor, short);
+    void rotateGraphic(cubicleColor, short);
+};
+#endif // _CUBE_HPP_
